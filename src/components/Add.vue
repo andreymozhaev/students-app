@@ -9,7 +9,7 @@
       </b-col>
       <b-col>
         <b-button variant="danger" @click="onUpload" v-if="!progress">Зарегистрироваться</b-button>
-        <b-spinner variant="primary" class="m-5" v-if="progress"></b-spinner>
+        <b-spinner variant="primary" v-if="progress"></b-spinner>
       </b-col>
     </b-row>
   </b-container>
@@ -72,6 +72,7 @@ export default {
       });
       //console.log(docRef);
       this.progress = false;
+      this.$router.push({name: "home"});
     },
   },
   created() {},
