@@ -1,20 +1,38 @@
 <template>
-  <div id="students">
-    <div v-for="student in students" :key="student.docId">
-      <img v-bind:src="student.image" alt="студент" />
-      <h2>{{ student.name }}</h2>
-      <div>
-        <b-button variant="danger" @click="deleteStudent(student.docId)"
-          >Удалить</b-button
+  <b-container fluid>
+    <b-row>
+      <b-col v-for="student in students" :key="student.docId" lg="2" md="3" sm="4" xs="12">
+        <b-card
+          :title="student.name"
+          :img-src="student.image"
+          img-alt="Image"
+          img-top
+          tag="article"
+          class="m-2"
         >
-      </div>
-    </div>
-  </div>
+          <b-button variant="danger" @click="deleteStudent(student.docId)"
+            ><b-icon icon="trash"></b-icon></b-button
+          >
+          <b-button variant="warning" v-if="!progress" @click="updateRating(student, 4)">4</b-button>
+          <b-button variant="success" v-if="!progress" @click="updateRating(student, 5)">5</b-button>
+        </b-card>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, query, where, onSnapshot, doc, deleteDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  onSnapshot,
+  doc,
+  deleteDoc,
+  updateDoc
+} from "firebase/firestore";
 
 export default {
   name: "Admin",
@@ -22,7 +40,8 @@ export default {
     return {
       students: [],
       studentAvatar: require("@/assets/student.png"),
-      db: {}
+      db: {},
+      progress: false
     };
   },
   methods: {
@@ -30,7 +49,15 @@ export default {
       return img ? require("" + img) : "";
     },
     async deleteStudent(docId) {
-      await deleteDoc(doc(this.db, "students", docId));
+      let value = await this.$bvModal.msgBoxConfirm("Вы уверены?");
+      if (value) await deleteDoc(doc(this.db, "students", docId));
+    },
+    async updateRating(student, value) {
+      this.progress = true;
+      const ref = doc(this.db, "students", student.docId);
+      const rating = student.rating += value;
+      await updateDoc(ref, {rating: rating});
+      this.progress = false;
     },
   },
   created() {
@@ -56,6 +83,7 @@ export default {
         let student = {};
         student.name = doc.data().name;
         student.image = doc.data().image;
+        student.rating = doc.data().rating;
         student.docId = doc.id;
         this.students.push(student);
       });
@@ -65,24 +93,5 @@ export default {
 </script>
 
 <style>
-#students {
-  max-height: 72vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-  column-gap: 2em;
-  row-gap: 2em;
-}
 
-#students div {
-  margin: auto;
-  text-align: center;
-}
-
-#students img {
-  width: 75%;
-}
-
-#students h2 {
-  text-align: center;
-}
 </style>

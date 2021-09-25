@@ -1,10 +1,23 @@
 <template>
-  <div id="students">
-    <div v-for="student in students" :key="student.docId">
-      <img v-bind:src="student.image" alt="студент" />
-      <h2>{{ student.name }}</h2>
-    </div>
-  </div>
+  <b-container fluid>
+    <b-row>
+      <b-col v-for="student in students" :key="student.docId" lg="2" md="3" sm="4" xs="12">
+        <b-card
+          :title="student.name"
+          :img-src="student.image"
+          img-alt="Image"
+          img-top
+          tag="article"
+          class="m-2"
+        >
+        <b-card-text>
+          <b-icon icon="star-fill" variant="warning"></b-icon>
+          {{ student.rating }}
+        </b-card-text>
+        </b-card>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -53,6 +66,7 @@ export default {
         let student = {};
         student.name = doc.data().name;
         student.image = doc.data().image;
+        student.rating = doc.data().rating;
         student.docId = doc.id;
         this.students.push(student);
       });
@@ -62,24 +76,5 @@ export default {
 </script>
 
 <style>
-#students {
-  max-height: 72vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-  column-gap: 2em;
-  row-gap: 2em;
-}
 
-#students div {
-  margin: auto;
-  text-align: center;
-}
-
-#students img {
-  width: 75%;
-}
-
-#students h2 {
-  text-align: center;
-}
 </style>
