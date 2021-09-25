@@ -21,58 +21,57 @@
 </template>
 
 <script>
-import { initializeApp } from "firebase/app";
+import { initializeApp } from 'firebase/app'
 import {
   getFirestore,
   collection,
   query,
-  where,
-  onSnapshot,
-} from "firebase/firestore";
+  onSnapshot
+} from 'firebase/firestore'
 
 export default {
-  name: "Home",
-  data() {
+  name: 'Home',
+  data () {
     return {
       students: [],
-      studentAvatar: require("@/assets/student.png"),
-    };
+      studentAvatar: require('@/assets/student.png')
+    }
   },
   methods: {
-    getImgUrl(img) {
-      return img ? require("" + img) : "";
-    },
+    getImgUrl (img) {
+      return img ? require('' + img) : ''
+    }
   },
-  created() {
+  created () {
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
-      apiKey: "AIzaSyACaPJkNGz7wViEK1yXRDMV5IImf9P_CD0",
-      authDomain: "students-app-9354e.firebaseapp.com",
-      projectId: "students-app-9354e",
-      storageBucket: "students-app-9354e.appspot.com",
-      messagingSenderId: "51399176797",
-      appId: "1:51399176797:web:761c67edf08c67d26a53b4",
-      measurementId: "G-5X9E365468",
-    };
+      apiKey: 'AIzaSyACaPJkNGz7wViEK1yXRDMV5IImf9P_CD0',
+      authDomain: 'students-app-9354e.firebaseapp.com',
+      projectId: 'students-app-9354e',
+      storageBucket: 'students-app-9354e.appspot.com',
+      messagingSenderId: '51399176797',
+      appId: '1:51399176797:web:761c67edf08c67d26a53b4',
+      measurementId: 'G-5X9E365468'
+    }
 
     // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore();
-    const q = query(collection(db, "students"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      this.students = [];
+    initializeApp(firebaseConfig)
+    const db = getFirestore()
+    const q = query(collection(db, 'students'))
+    onSnapshot(q, (querySnapshot) => {
+      this.students = []
       querySnapshot.forEach((doc) => {
-        let student = {};
-        student.name = doc.data().name;
-        student.image = doc.data().image;
-        student.rating = doc.data().rating;
-        student.docId = doc.id;
-        this.students.push(student);
-      });
-    });
-  },
-};
+        let student = {}
+        student.name = doc.data().name
+        student.image = doc.data().image
+        student.rating = doc.data().rating
+        student.docId = doc.id
+        this.students.push(student)
+      })
+    })
+  }
+}
 </script>
 
 <style>
